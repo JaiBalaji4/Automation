@@ -1,0 +1,56 @@
+# 1) listing the database (make sure username is retail_dba)
+sqoop list-databases \
+  --connect "jdbc:mysql://quickstart.cloudera:3306" \
+  --username retail_dba \
+  --password cloudera
+
+# 2) list tables (make sure u give database name)
+sqoop list-tables \
+	--connect "jdbc:mysql://quickstart.cloudera:3306/retail_fb"
+	--username retail_db
+	--password cloudera
+
+# 3) executing query
+sqoop eval \
+  --connect "jdbc:mysql://quickstart.cloudera:3306" \
+  --username retail_dba \
+  --password cloudera
+  --query "select count(1) from orders"
+
+ # 4) import one table(Copied to DEFAULT Location : /user/cloudera)
+ sqoop import \
+  --connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" \
+  --username retail_dba \
+  --password cloudera \
+  --table products
+
+  #5) import table to specific directory using target dir * directory shouldn't be exists otherwise it will through an error
+sqoop import \
+  --connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" \
+  --username retail_dba \
+  --password cloudera \
+  --table products
+  --target-dir /user/cloudera/balaji_test  
+
+  # 6) import specific column data to HDFS * directory shouldn't be exists otherwise it will through an error
+  sqoop import \
+  --connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" \
+  --username retail_dba \
+  --password cloudera \
+  --table products \
+  --target-dir=/user/cloudera/balaji_test\
+  --columns product_name,product_price
+
+ # 7)  # copying data with where clause * 1-use where clause value in quotes else it wont perform where clause 2- target sholdn't be exists otherwise throw an error 
+  sqoop import \
+  --connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" \
+  --username retail_dba \
+  --password cloudera \
+  --table products \
+  --target-dir=/user/cloudera/my_importXXX1\
+  --columns product_name,product_price \
+  --where “product_price > 100” 
+
+ # 8) importing data in diffrent format I) Avrodatafile (.json format) 2) Textfile(DEFAULT) 3) SEQUENCEFILE(BINARY FILE)
+ Syntax --as-avrodatafile --as-textfile --as-sequencefile
+
